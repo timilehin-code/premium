@@ -1,5 +1,6 @@
-MVC File Structure for PHP
-Below is a standard directory structure for a PHP application following the MVC pattern, with descriptions of each component.
+## MVC File Structure for PHP
+    Below is a standard directory structure for a PHP application following the MVC pattern, with descriptions of each component.
+## Project structure
 ```
 /project-root
 ├── /app                    # Core application files
