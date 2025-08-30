@@ -1,0 +1,39 @@
+:root {
+  --orange: #fe9900;
+  --grey-1: #a1a1a1;
+  --white: #f1f1f1;
+  --dark: #141414;
+  --dark-t: #14141444;
+}
+.my-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.login-container {
+  max-width: 400px;
+  width: 100%;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.input-field img {
+  width: 20px;
+  position: relative;
+  bottom: 34px;
+  left: 90%;
+}
+
+
+.my-btn {
+  background-color: var(--orange);
+  color: var(--white);
+  border-radius: 4px;
+  font-weight: bold;
+  border: none;
+}
