@@ -1,5 +1,6 @@
 MVC File Structure for PHP
 Below is a standard directory structure for a PHP application following the MVC pattern, with descriptions of each component.
+```
 /project-root
 ├── /app                    # Core application files
 │   ├── /Controllers       # Controller classes handling requests and responses
@@ -55,7 +56,7 @@ Below is a standard directory structure for a PHP application following the MVC 
 ├── .htaccess              # Apache configuration for routing
 ├── composer.json          # Composer configuration
 └── README.md              # Project documentation
-
+```
 Directory and File Descriptions
 
 /app: Contains the core application logic, split into MVC components.
