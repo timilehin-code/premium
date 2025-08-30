@@ -90,6 +90,7 @@ README.md: Provides project setup and usage instructions.
 
 Example File Content
 /public/index.php
+```php
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../core/Router.php';
@@ -121,7 +122,8 @@ class Router {
     }
 }
 
-/app/Controllers/HomeController.php
+// /app/Controllers/HomeController.php
+?>
 <?php
 class HomeController extends Controller {
     public function index() {
@@ -139,13 +141,14 @@ class User extends Model {
         return $this->db->query("SELECT * FROM $this->table")->fetchAll();
     }
 }
-
+?>
 /app/Views/home/index.php
 <?php include __DIR__ . '/../layouts/main.php'; ?>
 <h1><?php echo htmlspecialchars($data['title']); ?></h1>
 <p>Welcome to the Home Page!</p>
 
 /app/Views/layouts/main.php
+```
 <!DOCTYPE html>
 <html lang="en">
 <head>
