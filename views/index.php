@@ -23,7 +23,6 @@ include '../models/mail.php';
             </button>
         </div>
     </form>
-
     <?php
     include '../includes/footer.php';
     ?>
