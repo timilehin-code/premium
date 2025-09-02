@@ -19,7 +19,7 @@ if (isset($_POST['submit'])) {
     $code = rand(1111, 9999);
     try {
         //Server settings
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+        $mail->SMTPDebug = SMTP::DEBUG_OFF;                      //Enable verbose debug output
         $mail->isSMTP();                                            //Send using SMTP
         $mail->Host = $_ENV['EMAILHOST'];                     //Set the SMTP server to send through
         $mail->SMTPAuth = true;                                   //Enable SMTP authentication
@@ -30,8 +30,7 @@ if (isset($_POST['submit'])) {
 
         //Recipients
         $mail->setFrom($_ENV['EMAILUSERNAME'], 'Oluwatimilehin');
-        $mail->addAddress($_POST['userEmail']);     //Add a recipient
-        // $mail->addAddress('ellen@example.com');               //Name is optional
+        $mail->addAddress($_POST['email']);     //Add a recipient
         $mail->addReplyTo('no-reply@oluwatimilehintawose2005.com', "no-reply");
 
 
@@ -39,7 +38,7 @@ if (isset($_POST['submit'])) {
 
         //Content
         $mail->isHTML(true);                                  //Set email format to HTML
-        $mail->Subject = 'Your OTP';
+        $mail->Subject = 'OTP Request';
         $mail->Body = "<!DOCTYPE html>
                         <html lang='en'>
                         <head>
@@ -47,13 +46,13 @@ if (isset($_POST['submit'])) {
                             <meta http-equiv='X-UA-Compatible' content='IE=edge'>
                             <meta name='viewport' content='width=device-width, initial-scale=1.0'>
                         </head>
-                        <body style='margin: 0px;padding: 0px;font-family:sans-serif; background-color: #f2f2f2;color: #212B36;  font-style: italic;font-weight: 300;height:auto'><br><br>
+                        <body style='margin: 0px;padding: 0px;font-family:sans-serif; background-color: #fe9900;color: #212B36;  font-style: italic;font-weight: 300;height:auto'><br><br>
                             <div style='width: 260px;height: auto;  background-color: #fff; padding: 30px; margin: auto;padding: 30px;''>
                                 <br><br>
                                 <div style='margin-bottom: 20px;'>
                                     <p style='font-size:14px;'>Your one time password for premium is </p>
                                     <p style='font-size:27px;'>$code</p>
-                                     <p style='font-size:14px;'>If you didn't request for this code, please ignore this message</p>
+                                     <p style='font-size:14px; color:red;'>If you didn't request for this code, please ignore this message</p>
                                 </div>
                                 <br><br>
                             </div><br><br>
@@ -62,7 +61,13 @@ if (isset($_POST['submit'])) {
         // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
         $mail->send();
-        echo 'Message has been sent';
+
+        $_SESSION['otp'] = $code;
+        $_SESSION['email'] = $_POST['email'];
+        $_SESSION['name'] = $_POST['name'] ;
+        $_SESSION['password'] = $_POST['password'] ;
+    
+        header("location:public/completereg.php");
     } catch (Exception $e) {
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
