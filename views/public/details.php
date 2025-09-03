@@ -1,6 +1,7 @@
 <?php
 
 include '../../includes/header2.php';
+
 $books = [
     ['id' => 1, 'title' => 'The Mystery', 'author' => 'John Doe', 'price' => '$12.00', 'cover' => '../assets/img/bookCover1.png'],
     ['id' => 2, 'title' => 'The Oracle', 'author' => 'Jane Smith', 'price' => '$8.00', 'cover' => '../assets/img/bookCover2.png'],
@@ -25,6 +26,10 @@ if (!$book) {
     include '../../includes/footer2.php';
     exit;
 }
+
+$paid = isset($_GET['paid']) && $_GET['paid'] === 'true';
+
+
 ?>
 
 <body>
@@ -77,8 +82,22 @@ if (!$book) {
                     <span class="badge bg-success">In Stock</span>
                 </div>
                 <p class="mb-4">This is a detailed description of the eBook. It includes a synopsis, key features, and why you should read it. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                <button class="p-3 my-btn  btn-lg me-2">Add to Cart</button>
-                <button class="btn btn-outline-secondary btn-lg">Wishlist</button>
+                <form id="paymentForm">
+                    <input type="hidden" value="timi@gmail.com" id="email-address">
+                    <input type="hidden" value="<?php echo $b['price'] ?>" id="amount">
+                    <input type="hidden" value="<?php echo $b['id'] ?>" id="bookId">
+                    <?php if ($paid): ?>
+                        <button id="payBtn" type="button" class=" my-btn p-3 fw-bold"
+                            onclick="window.location.href='filedownload.zip'">
+                            DOWNLOAD NOW
+                        </button>
+
+                    <?php else: ?>
+                        <button id="payBtn" type="submit" class="btn btn-warning w-50 mx-auto p-3 fw-bold">
+                            BUY NOW
+                        </button>
+                    <?php endif; ?>
+                </form>
             </div>
         </div>
 
@@ -114,6 +133,42 @@ if (!$book) {
             </div>
         </div>
     </div>
+
+
+
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script>
+        document.getElementById("payBtn").addEventListener("click", function(e) {
+            e.preventDefault();
+
+            let email = document.getElementById("email-address").value;
+            let rawAmount = document.getElementById("amount").value;
+            let bookId = document.getElementById("bookId").value;
+
+            // 🔹 Clean up format (# and commas)
+            let cleanAmount = rawAmount.replace(/[^0-9.]/g, '');
+
+            let handler = PaystackPop.setup({
+                key: 'pk_test_e8679d4be88ed135325d4542b1ae89103a22321f',
+                email: email,
+                amount: cleanAmount * 100,
+                currency: 'NGN',
+                ref: 'TEST_' + Math.floor((Math.random() * 1000000000) + 1),
+
+                onClose: function() {
+                    alert('Transaction Cancelled.');
+                },
+
+                callback: function(response) {
+                    // ✅ Send to PHP verify page
+                    window.location.href = "../../models/gateway/paystack.php?reference=" + response.reference + "&id=" + bookId;
+                }
+            });
+
+
+            handler.openIframe();
+        });
+    </script>
     <?php
     include '../../includes/footer2.php';
     ?>
