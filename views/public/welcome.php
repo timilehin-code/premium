@@ -29,13 +29,27 @@ $books = [1, 2, 3, 4, 5, 6, 7, 8];
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Account
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Login</a></li>
-                            <li><a class="dropdown-item" href="#">Register</a></li>
-                        </ul>
+                        <?php
+                        if (isset($_SESSION['Login'])) {
+                        ?>
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Hi, <?php echo $_SESSION['userName']; ?></a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="giftedBooks.php">gifted books</a></li>
+                                <li><a class="dropdown-item" href="../../models/auth/logout.php">Logout</a></li>
+                            </ul>
+                        <?php
+                        } else {
+                        ?>
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Account
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="../auth/login.php">Login</a></li>
+                                <li><a class="dropdown-item" href="../index.php">Register</a></li>
+                            </ul>
+                        <?php
+                        }
+                        ?>
                     </li>
                 </ul>
             </div>

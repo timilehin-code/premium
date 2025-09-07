@@ -98,6 +98,19 @@ $paid = isset($_GET['paid']) && $_GET['paid'] === 'true';
                         </button>
                     <?php endif; ?>
                 </form>
+                <!-- buy for someone -->
+                <form action="">
+                    <div class="mt-3">
+                        <input type="hidden" value="timi@gmail.com" id="email-address">
+                        <input type="hidden" value="<?php echo $b['price'] ?>" id="amount">
+                        <input type="hidden" value="<?php echo $b['id'] ?>" id="bookId">
+                        <label for="giftEmail" class="form-label">Buy as a Gift for Someone</label>
+                        <input type="email" class="form-control" id="giftEmail" placeholder="Recipient's Email">
+                        <button id="payBtn" type="submit" class="btn btn-secondary w-50 mx-auto p-3 fw-bold mt-2">
+                            BUY AS GIFT
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -138,37 +151,46 @@ $paid = isset($_GET['paid']) && $_GET['paid'] === 'true';
 
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
-        document.getElementById("payBtn").addEventListener("click", function(e) {
-            e.preventDefault();
+        const payBtns = document.querySelectorAll("#payBtn")
+        payBtns.forEach(payBtn => {
+            payBtn.addEventListener("click", function(e) {
+                e.preventDefault();
 
-            let email = document.getElementById("email-address").value;
-            let rawAmount = document.getElementById("amount").value;
-            let bookId = document.getElementById("bookId").value;
+                let email = document.getElementById("email-address").value;
+                let rawAmount = document.getElementById("amount").value;
+                let bookId = document.getElementById("bookId").value;
+                let giftEmail = document.getElementById("giftEmail").value;
 
-            // 🔹 Clean up format (# and commas)
-            let cleanAmount = rawAmount.replace(/[^0-9.]/g, '');
+                // 🔹 Clean up format (# and commas)
+                let cleanAmount = rawAmount.replace(/[^0-9.]/g, '');
 
-            let handler = PaystackPop.setup({
-                key: 'pk_test_e8679d4be88ed135325d4542b1ae89103a22321f',
-                email: email,
-                amount: cleanAmount * 100,
-                currency: 'NGN',
-                ref: 'TEST_' + Math.floor((Math.random() * 1000000000) + 1),
+                let handler = PaystackPop.setup({
+                    key: 'pk_test_e8679d4be88ed135325d4542b1ae89103a22321f',
+                    email: email,
+                    amount: cleanAmount * 100,
+                    currency: 'NGN',
+                    ref: 'TEST_' + Math.floor((Math.random() * 1000000000) + 1),
 
-                onClose: function() {
-                    alert('Transaction Cancelled.');
-                },
+                    onClose: function() {
+                        alert('Transaction Cancelled.');
+                    },
 
-                callback: function(response) {
-                    // ✅ Send to PHP verify page
-                    window.location.href = "../../models/gateway/paystack.php?reference=" + response.reference + "&id=" + bookId;
-                }
+                    callback: function(response) {
+                        // ✅ Send to PHP verify page
+                        if (giftEmail != '') {
+                            window.location.href = `../../models/gateway/payStack.php?reference=${response.reference}&id=${bookId}&giftEmail=${giftEmail}`;
+                        } else {
+                            window.location.href = `../../models/gateway/payStack.php?reference=${response.reference}&id=${bookId}`;
+                        }
+                    }
+                });
+
+
+                handler.openIframe();
             });
-
-
-            handler.openIframe();
         });
     </script>
+
     <?php
     include '../../includes/footer2.php';
     ?>
