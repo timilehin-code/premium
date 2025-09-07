@@ -20,7 +20,7 @@ if (isset($_POST['verify'])) {
             $_SESSION['userId'] = $userId;
             $_SESSION['userName'] = $userName;
             $_SESSION['email'] = $email;
-            header("location:welcome.php");
+            header("location:public/welcome.php");
         }
     } else {
         echo "incorrect Otp";

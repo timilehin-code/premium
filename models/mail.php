@@ -67,7 +67,7 @@ if (isset($_POST['submit'])) {
         $_SESSION['name'] = $_POST['name'] ;
         $_SESSION['password'] = $_POST['password'] ;
     
-        header("location:public/completereg.php");
+        header("location:auth/completereg.php");
     } catch (Exception $e) {
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
