@@ -151,7 +151,7 @@ $paid = isset($_GET['paid']) && $_GET['paid'] === 'true';
 
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
-        const payBtns = document.querySelectorAll("#payBtn")
+        const payBtns = document.querySelectorAll("#payBtn");
         payBtns.forEach(payBtn => {
             payBtn.addEventListener("click", function(e) {
                 e.preventDefault();
@@ -172,7 +172,10 @@ $paid = isset($_GET['paid']) && $_GET['paid'] === 'true';
                     ref: 'TEST_' + Math.floor((Math.random() * 1000000000) + 1),
 
                     onClose: function() {
-                        alert('Transaction Cancelled.');
+                        alert('Transaction Cancelled.'); // Or a better message like 'Payment was cancelled.'
+                        setTimeout(() => {
+                            window.location.href = '../../views/public/cancelled.php';
+                        }, 1000); 
                     },
 
                     callback: function(response) {

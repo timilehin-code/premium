@@ -3,3 +3,4 @@
 composer.lock
 composer.json
 models/gateway/paystack.php
+uploads

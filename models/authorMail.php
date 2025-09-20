@@ -6,7 +6,7 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 //Load Composer's autoloader (created by composer, not included with PHPMailer)
-require '../vendor/autoload.php';
+require '../../vendor/autoload.php';
 
 // loading .env file
 use Dotenv\Dotenv;
@@ -66,7 +66,7 @@ if (isset($_POST['submit'])) {
         $_SESSION['name'] = $_POST['name'] ;
         $_SESSION['password'] = $_POST['password'] ;
     
-        header("location:auth/completereg.php");
+        header("location:completeAuthor.php");
     } catch (Exception $e) {
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
