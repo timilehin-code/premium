@@ -1,4 +1,16 @@
 <?php
+
+function SelectCategories($conn){
+    $selectCategories = "SELECT * FROM category";
+    $prepareCategories = $conn->prepare($selectCategories);
+    $prepareCategories->execute();
+    $categoryResult = $prepareCategories->get_result();
+    if ($categoryResult) {
+        return $categoryResult;
+    }
+}
+
+$authorId = $_SESSION['authorId'];
 if (isset($_POST['upload'])) {
     $bookTitle = $_POST['bookTitle'];
     $bookDescription = $_POST['bookDescription'];
@@ -35,15 +47,15 @@ if (isset($_POST['upload'])) {
         $moveBook = move_uploaded_file($tempfile, $preparedFile);
 
         if ($moveBook) {
-            $insertbook = "INSERT INTO book(bookName, bookDesc, bookCover, bookFile) VALUES (?,?,?,?)";
+            $insertbook = "INSERT INTO book(bookName, bookDesc, bookCover, bookFile, categoryId) VALUES (?,?,?,?,?)";
             $prepareBook = $conn->prepare($insertbook);
-            $prepareBook->bind_param("ssss", $bookTitle, $bookDescription, $bookCover, $NewFileName);
+            $prepareBook->bind_param("ssssi", $bookTitle, $bookDescription, $bookCover, $NewFileName, $bookCategory);
             $executeBook = $prepareBook->execute();
             $bookId = $conn->insert_id;
             if ($executeBook) {
-                $insertPrice = "INSERT INTO bookinfo(bookId, bookPrice, dateUploaded, timeUploaded) VALUES (?,?,?,?)";
+                $insertPrice = "INSERT INTO bookinfo(bookId, bookPrice, authorId, dateUploaded, timeUploaded) VALUES (?,?,?,?,?)";
                 $preparePrice = $conn->prepare($insertPrice);
-                $preparePrice->bind_param("idss", $bookId, $bookPrice, $dateUploaded, $timeUploaded);
+                $preparePrice->bind_param("idiss", $bookId, $bookPrice, $authorId, $dateUploaded, $timeUploaded);
                 $executePrice = $preparePrice->execute();
                 if ($executePrice) {
                     echo "<script>alert('Book uploaded successfully');</script>";
@@ -57,3 +69,5 @@ if (isset($_POST['upload'])) {
             echo "<script>alert('Failed to upload book file');</script>";
         }
 }
+
+

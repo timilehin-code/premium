@@ -1,8 +1,11 @@
 <?php
+
 include '../../includes/header2.php';
 if (!$_SESSION['AuthorLogin']) {
     header("location:../index.php");
 }
+include "../../models/selectauthorBooks.php";
+
 ?>
 
 <body class="dashboard-body">
@@ -68,43 +71,32 @@ if (!$_SESSION['AuthorLogin']) {
                             <th>Category</th>
                             <th>Price</th>
                             <th>Date Uploaded</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><img src="../assets/img/bookCover2.png" class="book-cover" alt="Book Cover" loading="lazy"></td>
-                            <td>The Great Novel</td>
-                            <td>Fiction</td>
-                            <td>$9.99</td>
-                            <td>Sep 10, 2025</td>
+                       <?php
+                        $resultBooks = SelectAuthorBooks($conn, $authorId);
+                        if ($resultBooks->num_rows > 0) {
+                            while ($row = $resultBooks->fetch_assoc()) {
+                                ?>
+                             <tr>
+                            <td><img src="<?php echo $row['bookCover']; ?>" class="book-cover" alt="Book Cover" loading="lazy"></td>
+                            <td><?php echo $row['bookName']; ?></td>
+                            <td><?php echo $row['categoryName']; ?></td>
+                            <td>₦ <?php echo number_format($row['bookprice'],2); ?></td>
+                            <td><?php echo $row['dateUploaded'];?></td>
+                            <td><?php echo statusColor($row['bookStatus']);?></td>
                             <td>
                                 <a href="edit-book.php?id=1" class="btn btn-sm btn-primary btn-action"><i class="fas fa-edit"></i> Edit</a>
                                 <a href="delete-book.php?id=1" class="btn btn-sm btn-danger btn-action" onclick="return confirm('Are you sure you want to delete this book?')"><i class="fas fa-trash"></i> Delete</a>
                             </td>
                         </tr>
-                        <tr>
-                            <td><img src="../assets/img/bookCover5.png" class="book-cover" alt="Book Cover"></td>
-                            <td>Science Unveiled</td>
-                            <td>Non-Fiction</td>
-                            <td>$12.99</td>
-                            <td>Sep 15, 2025</td>
-                            <td>
-                                <a href="edit-book.php?id=2" class="btn btn-sm btn-primary btn-action"><i class="fas fa-edit"></i> Edit</a>
-                                <a href="delete-book.php?id=2" class="btn btn-sm btn-danger btn-action" onclick="return confirm('Are you sure you want to delete this book?')"><i class="fas fa-trash"></i> Delete</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><img src="../assets/img/bookCover3.png" class="book-cover" alt="Book Cover"></td>
-                            <td>Mystery Manor</td>
-                            <td>Mystery</td>
-                            <td>$7.99</td>
-                            <td>Sep 18, 2025</td>
-                            <td>
-                                <a href="edit-book.php?id=3" class="btn btn-sm btn-primary btn-action"><i class="fas fa-edit"></i> Edit</a>
-                                <a href="delete-book.php?id=3" class="btn btn-sm btn-danger btn-action" onclick="return confirm('Are you sure you want to delete this book?')"><i class="fas fa-trash"></i> Delete</a>
-                            </td>
-                        </tr>
+                            <?php
+                            }
+                        }
+                       ?>
                     </tbody>
                 </table>
             </div>

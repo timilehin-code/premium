@@ -68,12 +68,17 @@ if (!$_SESSION['AuthorLogin']) {
                 <label for="bookCategory" class="form-label">Category</label>
                 <select class="form-select" name="bookCategory" required>
                     <option selected disabled>Select a category</option>
-                    <option value="fiction">Fiction</option>
-                    <option value="non-fiction">Non-Fiction</option>
-                    <option value="mystery">Mystery</option>
-                    <option value="sci-fi">Science Fiction</option>
-                    <option value="biography">Biography</option>
-                    <option value="other">Other</option>
+                    <?php
+                    $resultCategories = SelectCategories($conn);
+                    if ($resultCategories->num_rows > 0) {
+                        while ($row = $resultCategories->fetch_assoc()) {
+                    ?>
+                            <option value="<?php echo $row['categoryId']; ?>"><?php echo $row['categoryName'] ?></option>
+
+                    <?php
+                        }
+                    }
+                    ?>
                 </select>
             </div>
             <div class="mb-3">

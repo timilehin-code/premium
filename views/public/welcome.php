@@ -1,6 +1,7 @@
 <?php
 
 include '../../includes/header2.php';
+include "../../models/upload.php";
 $books = [1, 2, 3, 4, 5, 6, 7, 8];
 // var_dump($books);
 ?>
@@ -61,12 +62,16 @@ $books = [1, 2, 3, 4, 5, 6, 7, 8];
                 <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
                     Categories
                 </a>
-                <a href="#" class="list-group-item list-group-item-action">Fiction</a>
-                <a href="#" class="list-group-item list-group-item-action">Non-Fiction</a>
-                <a href="#" class="list-group-item list-group-item-action">Science</a>
-                <a href="#" class="list-group-item list-group-item-action">History</a>
-                <a href="#" class="list-group-item list-group-item-action">Biography</a>
-                <a href="#" class="list-group-item list-group-item-action">Children's Books</a>
+                <?php
+                $resultCategories = SelectCategories($conn);
+                if ($resultCategories->num_rows > 0) {
+                    while ($row = $resultCategories->fetch_assoc()) {
+                ?>
+                        <a href="#" class="list-group-item list-group-item-action"><?php echo $row['categoryName'] ?></a>
+                <?php
+                    }
+                }
+                ?>
             </div>
         </div>
         <div class="col-md-10">
