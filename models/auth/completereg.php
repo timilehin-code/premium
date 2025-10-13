@@ -14,11 +14,11 @@ if (isset($_POST['verify'])) {
             $reg->fullName = $userName;
             $reg->userEmail = $email;
             $reg->password = $password;
-            $insertUser = $reg->insertUser();
+            $reg->insertUser();
             // check if data is inserted and redirect
-            if ($insertUser) {
+            if ($reg->insertUser()) {
                 $_SESSION['Login'] = True;
-                $_SESSION['userId'] = $insertUser;
+                $_SESSION['userId'] =  $reg->insertUser();
                 $_SESSION['userName'] = $userName;
                 $_SESSION['email'] = $email;
                 header("location:../public/welcome.php");

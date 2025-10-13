@@ -62,4 +62,38 @@ class Registration
 
         return $userId;
     }
+
+    public function loginUser()
+    {
+        if (empty($this->userEmail)) {
+            $msg = "Email is required";
+            $_SESSION["msg"] = $msg;
+        } elseif (empty($this->password)) {
+            $msg = "Password is required";
+            $_SESSION["msg"] = $msg;
+        } else {
+            $selectUser = "SELECT * FROM users WHERE email=?";
+            $prepareUser = $this->conn->prepare($selectUser);
+            $prepareUser->bind_param("s", $this->userEmail);
+            $prepareUser->execute();
+            $result = $prepareUser->get_result();
+            if ($result->num_rows == 1) {
+                $row = $result->fetch_assoc();
+                $hashed_password = $row['password'];
+                if (password_verify($this->password, $hashed_password)) {
+                    $_SESSION['Login'] = True;
+                    $_SESSION['userId'] = $row['user_id'];
+                    $_SESSION['userName'] = $row['userName'];
+                    $_SESSION['email'] = $row['email'];
+                   return true;
+                } else {
+                    $msg = "Incorrect Password";
+                    $_SESSION["msg"] = $msg;
+                }
+            } else {
+                $msg = "User not found";
+                $_SESSION["msg"] = $msg;
+            }
+        }
+    }
 }
