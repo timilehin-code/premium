@@ -10,7 +10,7 @@ function SelectCategories($conn){
     }
 }
 
-$authorId = $_SESSION['authorId'];
+$authorId = $_SESSION['authorId'] ?? "";
 if (isset($_POST['upload'])) {
     $bookTitle = $_POST['bookTitle'];
     $bookDescription = $_POST['bookDescription'];

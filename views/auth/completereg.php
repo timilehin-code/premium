@@ -3,10 +3,6 @@ include '../../includes/header2.php';
 if (!$_SESSION['email']) {
     header("location:../index.php");
 }
-//  echo $_SESSION['otp'];
-echo $_SESSION['email'];
-echo$_SESSION['password'];
-echo $_SESSION['name'];
 include "../../models/auth/completereg.php";
 ?>
 <!DOCTYPE html>

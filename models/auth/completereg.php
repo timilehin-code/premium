@@ -1,28 +1,32 @@
 <?php
+include "../../classes/registration.php";
 $otp = $_SESSION['otp'];
-var_dump($otp);
 $email = $_SESSION['email'];
 $password = $_SESSION['password'];
 $name = $_SESSION['name'];
+$reg = new Registration($conn);
 if (isset($_POST['verify'])) {
-    $names = explode(" ", $name);
-    $userName = $names[0];
-    $userOtp = $_POST['OTP'];
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    if ($otp == $userOtp) {
-        $insertUser = "INSERT INTO users(userName,email,password) VALUES(?,?,?)";
-        $prepareUser = $conn->prepare($insertUser);
-        $prepareUser->bind_param("sss", $userName, $email, $hashed_password);
-        $execute = $prepareUser->execute();
-        $userId = $conn->insert_id;
-        if ($execute) {
-            $_SESSION['Login'] = True;
-            $_SESSION['userId'] = $userId;
-            $_SESSION['userName'] = $userName;
-            $_SESSION['email'] = $email;
-            header("location:public/welcome.php");
+    try {
+        $names = explode(" ", $name);
+        $userName = $names[0];
+        $userOtp = $_POST['OTP'];
+        if ($otp == $userOtp) {
+            $reg->fullName = $userName;
+            $reg->userEmail = $email;
+            $reg->password = $password;
+            $insertUser = $reg->insertUser();
+            // check if data is inserted and redirect
+            if ($insertUser) {
+                $_SESSION['Login'] = True;
+                $_SESSION['userId'] = $insertUser;
+                $_SESSION['userName'] = $userName;
+                $_SESSION['email'] = $email;
+                header("location:../public/welcome.php");
+            }
+        } else {
+            echo "incorrect otp";
         }
-    } else {
-        echo "incorrect Otp";
+    } catch (Throwable $th) {
+        echo $th->getmessage();
     }
 }
