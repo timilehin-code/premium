@@ -23,6 +23,15 @@
   background-color: #f8f9fa;
 }
 
+.alert-msg {
+  transition: opacity 0.5s ease-out !important; 
+  opacity: 1;
+}
+
+.alert-msg.fade-out {
+  opacity: 0 !important;
+}
+
 .register-container {
   max-width: 400px;
   width: 100%;

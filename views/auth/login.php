@@ -12,13 +12,17 @@ include "../../models/auth/login.php";
             <?php
             if (isset($_SESSION["msg"])) {
             ?>
-                <div class="alert alert-primary text-center">
+                <div class="alert alert-msg alert-primary text-center">
                     <?php
-                    echo $_SESSION["msg"];
+                    echo htmlspecialchars($_SESSION["msg"]); // Use htmlspecialchars for security!
                     unset($_SESSION["msg"]);
-                    ?> <br>
-
+                    ?>
                 </div>
+
+                <!-- JS here runs after the div -->
+                <script>
+                    // Paste the JS function from above here
+                // </script>
             <?php
             }
             ?>

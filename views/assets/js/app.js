@@ -1,48 +1,84 @@
-const myBtn = document.querySelector(".my-btn");
-const form = document.querySelector(".verify");
-
-myBtn.addEventListener("click", (e) => {
-  myBtn.innerHTML =
-    '<i class="fa-solid fa-spinner fa-spin"></i> verifing...';
-  // myBtn.disabled = true;
-
-  // Perform any validation if needed
-  const userEmail = document.querySelector("#OTP").value;
-  if (userEmail.trim() === "") {
-    e.preventDefault(); // Prevent default submission to control it manually
-
-    document.querySelector("#username-error").style.display = "block";
-    myBtn.disabled = false;
-    myBtn.textContent = "verify";
-    setTimeout(() => {
-      document.querySelector("#username-error").style.display = "none";
-    }, 30000);
+(function () {
+  if (window.appJsInitialized) {
+    console.log("app.js already initialized; skipping re-execution");
     return;
   }
+  window.appJsInitialized = true;
 
-  setTimeout(() => {
-    myBtn.disabled = false;
-    myBtn.textContent = "Register";
-  }, 30000);
-});
+  function getElement(selector, method = "querySelector") {
+    const el =
+      method === "id"
+        ? document.getElementById(selector)
+        : document.querySelector(selector);
+    if (!el) {
+      console.warn(`Element not found: ${selector}`);
+    }
+    return el;
+  }
 
-// form validation
-  function handleRegister() {
-    const usernameInput = document.getElementById("username");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const confirmPasswordInput =
-      document.getElementById("confirm-password");
-    const usernameError = document.getElementById("username-error");
-    const emailError = document.getElementById("email-error");
-    const passwordError = document.getElementById("password-error");
-    const confirmPasswordError = document.getElementById(
-      "confirm-password-error"
-    );
+  // Verification button logic
+  var myBtn = getElement(".my-btn");
+  var otpInput = getElement("#OTP");
+  var usernameError = getElement("#username-error");
 
-    let isValid = true;
+  if (myBtn && otpInput && usernameError) {
+    // Define handler (named for removal)
+    function verifyHandler(e) {
+      myBtn.innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i> verifying...';
 
-    // Username validation
+      var userEmail = otpInput.value;
+      if (userEmail.trim() === "") {
+        e.preventDefault();
+        usernameError.style.display = "block";
+        myBtn.disabled = false;
+        myBtn.textContent = "verify";
+
+        setTimeout(function () {
+          usernameError.style.display = "none";
+        }, 30000);
+        return;
+      }
+
+      setTimeout(function () {
+        myBtn.disabled = false;
+        myBtn.textContent = "Register";
+      }, 30000);
+    }
+
+    myBtn.removeEventListener("click", verifyHandler);
+    myBtn.addEventListener("click", verifyHandler);
+  }
+
+  window.handleRegister = function () {
+    var usernameInput = getElement("username", "id");
+    var emailInput = getElement("email", "id");
+    var passwordInput = getElement("password", "id");
+    var confirmPasswordInput = getElement("confirm-password", "id");
+    var usernameError = getElement("username-error", "id");
+    var emailError = getElement("email-error", "id");
+    var passwordError = getElement("password-error", "id");
+    var confirmPasswordError = getElement("confirm-password-error", "id");
+
+    if (
+      ![
+        usernameInput,
+        emailInput,
+        passwordInput,
+        confirmPasswordInput,
+        usernameError,
+        emailError,
+        passwordError,
+        confirmPasswordError,
+      ].every(Boolean)
+    ) {
+      console.warn("Form elements missing; skipping");
+      return false;
+    }
+
+    var isValid = true;
+
+    // Username
     if (!usernameInput.value.trim()) {
       usernameInput.classList.add("is-invalid");
       usernameError.style.display = "block";
@@ -52,8 +88,8 @@ myBtn.addEventListener("click", (e) => {
       usernameError.style.display = "none";
     }
 
-    // Email validation
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Email
+    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (
       !emailInput.value.trim() ||
       !emailPattern.test(emailInput.value.trim())
@@ -66,7 +102,7 @@ myBtn.addEventListener("click", (e) => {
       emailError.style.display = "none";
     }
 
-    // Password validation
+    // Password
     if (!passwordInput.value.trim() || passwordInput.value.length < 6) {
       passwordInput.classList.add("is-invalid");
       passwordError.style.display = "block";
@@ -76,21 +112,50 @@ myBtn.addEventListener("click", (e) => {
       passwordError.style.display = "none";
     }
 
-
     if (isValid) {
       console.log("REGISTRATION WAS SUCCESSFUL");
-      return true
     }
+    return isValid;
+  };
+
+  // Password toggle
+  var eye = getElement(".eyes");
+  var passwordInputForToggle = getElement("#password");
+
+  if (eye && passwordInputForToggle) {
+    function toggleHandler() {
+      if (passwordInputForToggle.type === "password") {
+        passwordInputForToggle.type = "text";
+        eye.src = "assets/img/icons/close-eye.svg";
+      } else {
+        passwordInputForToggle.type = "password";
+        eye.src = "assets/img/icons/open-eye.svg";
+      }
+    }
+
+    eye.removeEventListener("click", toggleHandler);
+    eye.addEventListener("click", toggleHandler);
   }
 
-  const eye = document.querySelector(".eyes");
-  const passwordInput = document.querySelector("#password");
-  eye.addEventListener("click", () => {
-    if (passwordInput.type === "password") {
-      passwordInput.type = "text";
-      eye.src = "assets/img/icons/close-eye.svg";
-    } else {
-      passwordInput.type = "password";
-      eye.src = "assets/img/icons/open-eye.svg";
-    }
-  });
+  // Alert removal
+  function removeMessage() {
+    var msg = getElement(".alert-msg");
+    if (!msg) return;
+
+    setTimeout(function () {
+      msg.classList.add("fade-out");
+      setTimeout(function () {
+        msg.style.display = "none";
+      }, 500);
+    }, 2800);
+  }
+
+  // DOM ready for removeMessage
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", removeMessage);
+  } else {
+    removeMessage();
+  }
+
+  console.log("app.js initialized successfully");
+})();

@@ -31,9 +31,9 @@ class Registration
             }
             $prepareEmail->bind_param("s", $this->userEmail);
             $prepareEmail->execute();
-            $result = $prepareEmail->get_result(); // Fixed: get_result()
+            $result = $prepareEmail->get_result();
 
-            if ($result->num_rows > 0) { // Fixed: num_rows
+            if ($result->num_rows > 0) {
                 echo "Email already exists!";
                 $prepareEmail->close();
                 return false;
@@ -43,12 +43,12 @@ class Registration
             // Insert user
             $hashPassword = password_hash($this->password, PASSWORD_DEFAULT);
             $insertUser = "INSERT INTO users (userName, email, password) VALUES (?, ?, ?)";
-            $prepareUser = $this->conn->prepare($insertUser); // Use $this->conn consistently
+            $prepareUser = $this->conn->prepare($insertUser);
             if (!$prepareUser) {
                 throw new Exception("Prepare failed: " . $this->conn->error);
             }
             $prepareUser->bind_param("sss", $this->fullName, $this->userEmail, $hashPassword);
-            $success = $prepareUser->execute(); // Renamed for clarity
+            $success = $prepareUser->execute();
             if ($success) {
                 $userId = $this->conn->insert_id;
             } else {
@@ -65,35 +65,44 @@ class Registration
 
     public function loginUser()
     {
-        if (empty($this->userEmail)) {
-            $msg = "Email is required";
-            $_SESSION["msg"] = $msg;
-        } elseif (empty($this->password)) {
-            $msg = "Password is required";
-            $_SESSION["msg"] = $msg;
-        } else {
-            $selectUser = "SELECT * FROM users WHERE email=?";
-            $prepareUser = $this->conn->prepare($selectUser);
-            $prepareUser->bind_param("s", $this->userEmail);
-            $prepareUser->execute();
-            $result = $prepareUser->get_result();
-            if ($result->num_rows == 1) {
-                $row = $result->fetch_assoc();
-                $hashed_password = $row['password'];
-                if (password_verify($this->password, $hashed_password)) {
-                    $_SESSION['Login'] = True;
-                    $_SESSION['userId'] = $row['user_id'];
-                    $_SESSION['userName'] = $row['userName'];
-                    $_SESSION['email'] = $row['email'];
-                   return true;
-                } else {
-                    $msg = "Incorrect Password";
+        try {
+            if (empty($this->userEmail)) {
+                $msg = "Email is required";
+                $_SESSION["msg"] = $msg;
+            } elseif (empty($this->password)) {
+                $msg = "Password is required";
+                $_SESSION["msg"] = $msg;
+            } else {
+                $selectUser = "SELECT * FROM users WHERE email=?";
+                $prepareUser = $this->conn->prepare($selectUser);
+                if (!$prepareUser) {
+                    $msg = throw new Exception("Error Processing Request");
                     $_SESSION["msg"] = $msg;
                 }
-            } else {
-                $msg = "User not found";
-                $_SESSION["msg"] = $msg;
+                $prepareUser->bind_param("s", $this->userEmail);
+                $prepareUser->execute();
+                $result = $prepareUser->get_result();
+                if ($result->num_rows == 1) {
+                    $row = $result->fetch_assoc();
+                    $hashed_password = $row['password'];
+                    if (password_verify($this->password, $hashed_password)) {
+                        $_SESSION['Login'] = True;
+                        $_SESSION['userId'] = $row['user_id'];
+                        $_SESSION['userName'] = $row['userName'];
+                        $_SESSION['email'] = $row['email'];
+                        return true;
+                    } else {
+                        $msg = "Incorrect Password";
+                        $_SESSION["msg"] = $msg;
+                    }
+                } else {
+                    $msg = "User not found";
+                    $_SESSION["msg"] = $msg;
+                }
             }
+        } catch (\Throwable $th) {
+            $msg = $th->getMessage();
+            $_SESSION["msg"] = $msg;
         }
     }
 }
